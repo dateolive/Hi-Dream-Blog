@@ -5,7 +5,9 @@
 
 本项目目前还在完善中，功能也在不断优化中，前端页面编写花费时间较后端少，因为之前写了不少博客样式，有些拿来改改就行，[Semantic UI 博客样式](https://github.com/dateolive/mdy-blog) 这个是之前写的一个博客样式，本来想打算用springboot和thymeleaf开发博客的，后来想了想，前后端分离才是王道，所以采取了springboot和vue来开发，vue是我之前学的，所以容易上手。而springboot框架是我这阵子才刚刚起步，在b站学习完了狂神大大的视频后，趁热做的一个练手项目，可能会有很多bug，敬请原谅~~
 
+该博客系统的sql文件以及一些静态文件：[https://github.com/dateolive/Hi-Dream-BlogReSource](https://github.com/dateolive/Hi-Dream-BlogReSource)
 
+博客sql文件导入之后，初始账户密码是： 账户：`Vistortest` 密码：`Vistortest`
 
 [博客小程序](https://github.com/dateolive/halo-dream)
 
@@ -19,8 +21,8 @@
 
 #### **项目预览**
 
-- 前台：https://blog.datealive.top/
-- 后台：https://admin.datealive.top/     游客账户：`Vistortest` 密码：`Vistortest`
+- 前台：[https://blog.datealive.top/](https://blog.datealive.top/)
+- 后台：[https://admin.datealive.top/](https://admin.datealive.top/)     游客账户：`Vistortest` 密码：`Vistortest`
 
 #### **项目描述**
 
