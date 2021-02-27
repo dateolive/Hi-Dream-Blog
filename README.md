@@ -17,7 +17,11 @@
 
 如果你对这个博客系统感兴趣，或者想交pr的，可以联系我，加入到Organizations里。
 
+博客学习交流群：
 
+<img src="https://gitee.com/zhangrenfeng/images/raw/master/img/20210227210248.png" alt="image-20210227210248766" style="zoom:25%;" />
+
+有问题可以进群问哈~
 
 #### **项目预览**
 
