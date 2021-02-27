@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datealive.mapper.LogMapper">
+
+
+    <resultMap id="logList" type="com.datealive.pojo.Log">
+        <id property="id" column="Id"/>
+        <result property="operateor" column="operateor"/>
+        <result property="operatetype" column="operateType"/>
+        <result property="operatedate" column="operateDate"/>
+        <result property="operateresult" column="operateResult"/>
+        <result property="ip" column="ip"/>
+        <result property="ipSource" column="ip_source"/>
+        <result property="description" column="description"/>
+        <result property="os" column="os"/>
+        <result property="browser" column="browser"/>
+        <result property="error" column="error"/>
+        <result property="classification" column="classification"/>
+        <result property="SpendTime" column="SpendTime"/>
+        <result property="url" column="url"/>
+    </resultMap>
+
+    <insert id="insertLog" parameterType="int">
+        insert into log
+        values(0
+        <if test='operateor!=null'>
+            ,#{operateor}
+        </if>
+        <if test='operateor==null'>
+            ,null
+        </if>
+        <if test='operatetype!=null'>
+            ,#{operatetype}
+        </if>
+        <if test='operatetype==null'>
+            ,null
+        </if>
+        <if test='operatedate!=null'>
+            ,#{operatedate}
+        </if>
+        <if test='operatedate==null'>
+            ,null
+        </if>
+        <if test='operateresult!=null'>
+            ,#{operateresult}
+        </if>
+        <if test='operateresult==null'>
+            ,null
+        </if>
+        <if test='ip!=null'>
+            ,#{ip}
+        </if>
+        <if test='ip==null'>
+            ,null
+        </if>
+
+        <if test='ipSource!=null'>
+            ,#{ipSource}
+        </if>
+        <if test='ipSource==null'>
+            ,null
+        </if>
+        <if test='description!=null'>
+            ,#{description}
+        </if>
+        <if test='description==null'>
+            ,null
+        </if>
+        <if test='os!=null'>
+            ,#{os}
+        </if>
+        <if test='os==null'>
+            ,null
+        </if>
+        <if test='browser!=null'>
+            ,#{browser}
+        </if>
+        <if test='browser==null'>
+            ,null
+        </if>
+        <if test='error!=null'>
+            ,#{error}
+        </if>
+        <if test='error==null'>
+            ,null
+        </if>
+        <if test='classification!=null'>
+            ,#{classification}
+        </if>
+        <if test='classification==null'>
+            ,0
+        </if>
+        <if test='SpendTime!=null'>
+            ,#{SpendTime}
+        </if>
+        <if test='SpendTime==null'>
+            ,0
+        </if>
+        <if test='url!=null'>
+            ,#{url}
+        </if>
+        <if test='url==null'>
+            ,null
+        </if>
+
+        );
+    </insert>
+
+    <select id="getLogListByLogQuery" resultMap="logList" parameterType="com.datealive.service.dto.LogQuery">
+        select * from log where classification=#{classification}  ORDER by operateDate desc
+    </select>
+
+    <select id="getLogCountByClassification" parameterType="int" resultType="int">
+        select count(*) from log where classification=#{classification}
+    </select>
+
+    <delete id="deleteLog" parameterType="int">
+        delete from log where Id=#{id}
+    </delete>
+</mapper>

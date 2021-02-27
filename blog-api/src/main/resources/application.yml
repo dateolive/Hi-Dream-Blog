@@ -1,0 +1,76 @@
+server:
+  port: 8089
+  website:
+    url: https://blog.datealive.top/ #评论邮箱回复前缀链接  这里是你的前端页面url
+file-save-path: D:/blogimg/ #/www/wwwroot/api.datealive.top/image/ #文件上传位置
+
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/blog_db?serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource # 自定义数据源
+    #Spring Boot 默认是不注入这些属性值的，需要自己绑定
+    #druid 数据源专有配置
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: false
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    #配置监控统计拦截的filters，stat:监控统计、log4j：日志记录、wall：防御sql注入
+    #如果允许时报错  java.lang.ClassNotFoundException: org.apache.log4j.Priority
+    #则导入 log4j 依赖即可，Maven 地址：https://mvnrepository.com/artifact/log4j/log4j
+    filters: stat,log4j2,wall
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+    connectionInitSqls : set names utf8mb4
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 20000
+  mail: #邮件任务
+    host: smtp.qq.com
+    username: 2448282543@qq.com
+    password: drmydefgaptbdjif
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.datealive.pojo
+
+shiro-redis:
+  enabled: true
+  redis-manager:
+    host: 127.0.0.1:6379
+
+datealive:
+  jwt:
+    # 加密秘钥
+    secret: zrf5202e34348f86b67cde581c0f9eb5
+    # token有效时长，7天，单位秒
+    expire: 604800
+    header: token
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+# 控制台输出sql语句
+# 打印mybatis sql执行日志信息
+#logging:
+#  level:
+#    com.datealive.mapper: debug

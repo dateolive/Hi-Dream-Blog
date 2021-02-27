@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datealive.mapper.UserMapper">
+
+    <select id="getUserByName" parameterType="String" resultType="User">
+        select * from blog_user
+        where username = #{username}
+    </select>
+
+    <select id="getUserById" resultType="User">
+        select * from blog_user
+        where user_id = #{userId}
+    </select>
+    <!--修改密码-->
+    <update id="changePassword">
+        update blog_user set password = #{password} where username = #{userName}
+    </update>
+</mapper>

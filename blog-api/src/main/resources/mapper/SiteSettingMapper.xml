@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datealive.mapper.SiteSettingMapper">
+    <!--查询站点设置-->
+    <select id="getList" resultType="com.datealive.pojo.SiteSetting">
+        select * from site_setting
+    </select>
+
+    <!--查询友链页面信息-->
+    <select id="getFriendInfo" resultType="com.datealive.pojo.SiteSetting">
+        select * from site_setting where type=4
+    </select>
+
+    <!--更新-->
+    <update id="updateSiteSetting">
+        update site_setting set value=#{value} where id=#{id}
+    </update>
+
+    <!--删除-->
+    <delete id="deleteSiteSettingById">
+        delete from site_setting where id=#{id}
+    </delete>
+
+    <!--添加-->
+    <insert id="saveSiteSetting" useGeneratedKeys="true" keyProperty="id">
+        insert into site_setting (name_en, name_zh, value, type) values (#{name_en}, #{name_zh}, #{value}, #{type})
+    </insert>
+
+
+</mapper>

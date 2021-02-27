@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datealive.mapper.BlogArticleMapper">
+
+    <!--查询文章状态为发布的数量-->
+    <select id="countBlogArticle" resultType="int">
+        select count(*) from article where blog_status=0
+    </select>
+    <!--查询所有文章数量-->
+    <select id="countBlogArticleWithStatus" resultType="int">
+        select count(*) from article
+    </select>
+    <!--根据title查询文章数量-->
+    <select id="countBlogArticleByTitle" resultType="int">
+        select count(*) from article where blog_title like concat('%',#{blog_title},'%')
+    </select>
+    <!--根据id查询文章-->
+    <resultMap id="blogDetail" type="com.datealive.pojo.BlogArticle">
+        <id property="blog_id" column="blog_id"/>
+        <result property="blog_title" column="blog_title"/>
+        <result property="blog_cover_image" column="blog_cover_image"/>
+        <result property="blog_content" column="blog_content"/>
+        <result property="blog_summary" column="blog_summary"/>
+        <result property="blog_status" column="blog_status"/>
+        <result property="blog_visits" column="blog_visits"/>
+        <result property="create_time" column="create_time"/>
+        <result property="update_time" column="update_time"/>
+        <result property="is_top" column="is_top"/>
+        <result property="blog_like" column="blog_like"/>
+        <result property="comment_cnt" column="comment_cnt"/>
+        <collection property="cateGory" javaType="com.datealive.service.vo.CateGory">
+            <result property="category_id" column="category_id"/>
+            <result property="category_name" column="category_name"/>
+        </collection>
+        <collection property="tags" javaType="com.datealive.service.vo.Tag">
+            <result property="tag_id" column="tag_id"/>
+            <result property="tag_name" column="tag_name"/>
+        </collection>
+    </resultMap>
+    <select id="getBlogArticleById" resultMap="blogDetail" parameterType="int">
+        select b.blog_id,b.blog_title,b.blog_cover_image,b.blog_content,
+               b.blog_summary,b.blog_status,b.blog_visits,
+               b.create_time,b.update_time,b.is_top,b.blog_like,
+               article_category.category_id,
+               article_category.category_name,
+               article_blog_tag.tag_id,
+               article_blog_tag.tag_name,
+               (select count(*) from article_comment  where article_comment.blog_id=b.blog_id) as comment_cnt
+        from article as b
+                 left join tb_blog_category_relation as c on b.blog_id = c.blog_id
+                 left join article_category on article_category.category_id=c.category_id
+                 left join article_blog_tag_relation as tag  on tag.blog_id = b.blog_id
+                 left join article_blog_tag on article_blog_tag.tag_id = tag.tag_id
+        where b.blog_id=#{blog_id}
+    </select>
+
+    <!--根据分页查询文章-->
+    <resultMap id="blogInfo" type="com.datealive.service.vo.BlogArticleInfo">
+        <id property="blog_id" column="blog_id"/>
+        <result property="blog_title" column="blog_title"/>
+        <result property="blog_cover_image" column="blog_cover_image"/>
+        <result property="blog_summary" column="blog_summary"/>
+        <result property="blog_status" column="blog_status"/>
+        <result property="blog_visits" column="blog_visits"/>
+        <result property="create_time" column="create_time"/>
+        <result property="update_time" column="update_time"/>
+        <result property="is_top" column="is_top"/>
+        <result property="blog_like" column="blog_like"/>
+        <result property="comment_cnt" column="comment_cnt"/>
+        <association property="cateGory" javaType="com.datealive.service.vo.CateGory">
+            <result property="category_id" column="category_id"/>
+            <result property="category_name" column="category_name"/>
+        </association>
+    </resultMap>
+    <select id="getAllBlogArticle" resultMap="blogInfo">
+        select b.blog_id,b.blog_title,b.blog_cover_image,
+               b.blog_summary,b.blog_status,b.blog_visits,
+               b.create_time,b.update_time,b.is_top,b.blog_like,
+               c.category_id,
+               article_category.category_name,
+               (select count(*) from article_comment  where article_comment.blog_id=b.blog_id) as comment_cnt
+        from ((article as b left join tb_blog_category_relation as c on b.blog_id = c.blog_id)
+                 left join article_category on article_category.category_id=c.category_id)
+        where b.blog_status=0
+        group by b.blog_id
+        ORDER by b.is_top desc,b.create_time desc
+    </select>
+    <!--管理员查看所有文章-->
+    <select id="getAllBlogArticleWithStatus" resultMap="blogInfo">
+        select b.blog_id,b.blog_title,b.blog_cover_image,
+               b.blog_summary,b.blog_status,b.blog_visits,
+               b.create_time,b.update_time,b.is_top,b.blog_like,
+               c.category_id,
+               article_category.category_name,
+               (select count(*) from article_comment  where article_comment.blog_id=b.blog_id) as comment_cnt
+        from ((article as b left join tb_blog_category_relation as c on b.blog_id = c.blog_id)
+                 left join article_category on article_category.category_id=c.category_id)
+        group by b.blog_id
+        order by b.create_time desc
+    </select>
+
+
+
+    <!--分页查询文章id和标题-->
+    <resultMap id="blogIdAndTitle" type="com.datealive.service.vo.BlogArticleIdAndTitle">
+        <result property="blog_id" column="blog_id"/>
+        <result property="blog_title" column="blog_title"/>
+        <result property="create_time" column="create_time"/>
+    </resultMap>
+    <select id="getBlogArticleIdAndTitle" resultMap="blogIdAndTitle">
+        select b.blog_id,b.blog_title,b.create_time from article as b order by b.create_time desc
+    </select>
+
+    <!--根据title查询文章-->
+    <select id="getBlogArticleByTitle" resultMap="blogInfo">
+        select b.blog_id,b.blog_title,b.blog_cover_image,
+               b.blog_summary,b.blog_status,b.blog_visits,
+               b.create_time,b.update_time,b.is_top,b.blog_like,
+               c.category_id,
+               article_category.category_name,
+               (select count(*) from article_comment  where article_comment.blog_id=b.blog_id) as comment_cnt
+        from ((article as b left join tb_blog_category_relation as c on b.blog_id = c.blog_id)
+                 left join article_category on article_category.category_id=c.category_id)
+        where blog_title like concat('%',#{blog_title},'%')
+        group by b.blog_id
+        order by b.create_time desc
+    </select>
+
+    <!--根据文章id删除文章-->
+    <delete id="deleteBlogById">
+        delete from article where blog_id = #{blog_id}
+    </delete>
+    <!--维护tag关系表-->
+    <delete id="deleteBlogTagById">
+        delete from article_blog_tag_relation where blog_id = #{blog_id}
+    </delete>
+    <!--维护category关系表-->
+    <delete id="deleteBlogCategoryById">
+        delete from tb_blog_category_relation where blog_id = #{blog_id}
+    </delete>
+    <!--维护comment-->
+    <delete id="deleteBlogCommentById">
+        delete from article_comment where blog_id = #{blog_id}
+    </delete>
+
+
+    <!--添加博客文章-->
+    <insert id="saveBlogArticle" keyProperty="blog_id" useGeneratedKeys="true" parameterType="com.datealive.pojo.BlogArticle">
+        insert into article(blog_title, blog_cover_image, blog_content, blog_summary, blog_status, blog_visits, create_time, update_time, is_top, blog_like)
+        VALUES
+            (#{blog_title},#{blog_cover_image},#{blog_content},#{blog_summary},#{blog_status},#{blog_visits},#{create_time},#{update_time},#{is_top},#{blog_like})
+    </insert>
+
+    <!--更新文章-->
+    <update id="updateBlogArticle" parameterType="com.datealive.pojo.BlogArticle">
+        update article
+        set blog_title = #{blog_title},
+            blog_cover_image = #{blog_cover_image},
+            blog_content = #{blog_content},
+            blog_summary = #{blog_summary},
+            blog_status = #{blog_status},
+            update_time = #{update_time},
+            is_top = #{is_top}
+        where blog_id = #{blog_id}
+    </update>
+    <!--更新文章点赞量-->
+    <update id="increaseBlogLike">
+        update article set blog_like=blog_like+1 where blog_id = #{blog_id}
+    </update>
+
+    <!--更新文章访问量：后期需要redis和定时任务来实现更新-->
+    <update id="increaseBlogViews">
+        update article
+        set blog_visits = #{ViewCnt}
+        where blog_id = #{blog_id}
+    </update>
+    <!--更新文章置顶-->
+    <update id="updateBlogTopById">
+        update article
+        set is_top=#{is_top}
+        where blog_id=#{blog_id}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datealive.mapper.FriendsMapper">
+
+    <resultMap id="AllFriends" type="com.datealive.pojo.Friends">
+        <id property="link_id" column="link_id"/>
+        <result property="link_name" column="link_name"/>
+        <result property="link_url" column="link_url"/>
+        <result property="link_info" column="link_info"/>
+        <result property="avatar" column="avatar"/>
+    </resultMap>
+    <!--客户端查询所有友链-->
+    <select id="getAllFriends" resultMap="AllFriends">
+        select * from blog_link where status=1
+    </select>
+    <!--管理员获得所有友链-->
+    <select id="getAllFriendsWithStatus" resultMap="AllFriends">
+        select * from blog_link
+        order by status
+    </select>
+    <!--查询友链数量-->
+    <select id="getFriendsCnt" resultType="int">
+        select count(*) from blog_link
+    </select>
+    <!--根据name模糊查询-->
+    <select id="queryFriendsByName" parameterType="String" resultMap="AllFriends">
+        select * from blog_link where link_name like concat(concat("%",#{link_name}),"%")
+    </select>
+
+    <!--添加友链-->
+    <insert id="saveFriend" parameterType="com.datealive.pojo.Friends">
+        insert into blog_link(link_name, link_url, link_info, avatar,status)
+        VALUES(#{link_name},#{link_url},#{link_info},#{avatar},#{status})
+    </insert>
+
+    <!--更新友链-->
+    <update id="updateFriend" parameterType="com.datealive.pojo.Friends">
+        update blog_link
+        set link_name = #{link_name},
+            link_url= #{link_url},
+            link_info=#{link_info},
+            avatar=#{avatar},
+            status=#{status}
+        where link_id = #{link_id}
+    </update>
+
+    <!--更新友链状态-->
+    <update id="updateStatus" parameterType="int">
+        update blog_link
+        set `status`=#{status}
+        where link_id = #{link_id}
+    </update>
+
+    <!--根据id删除友链-->
+    <delete id="deleteFriend">
+        delete from blog_link where link_id = #{link_id}
+    </delete>
+
+
+
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datealive.mapper.TagMapper">
+
+    <resultMap id="TagIdAndName" type="com.datealive.service.vo.Tag">
+        <id property="tag_id" column="tag_id"/>
+        <result property="tag_name" column="tag_name"/>
+    </resultMap>
+    <!--查询所有标签的id和name-->
+    <select id="getTagIdAndName" resultMap="TagIdAndName">
+        select t.tag_id,t.tag_name from article_blog_tag as t
+    </select>
+
+    <select id="getTagCnt" resultType="int">
+        select count(*) from article_blog_tag
+    </select>
+
+    <!--查询该分类下所有文章-->
+    <resultMap id="tag_blogs" type="com.datealive.pojo.Tag">
+        <id property="tag_id" column="tag_id"/>
+        <result property="tag_name" column="tag_name"/>
+        <collection property="blogs" resultMap="blogInfo"/>
+    </resultMap>
+    <resultMap id="blogInfo" type="com.datealive.service.vo.BlogArticleCateAndTag">
+        <id property="blog_id" column="blog_id"/>
+        <result property="blog_title" column="blog_title"/>
+        <result property="blog_cover_image" column="blog_cover_image"/>
+        <result property="blog_summary" column="blog_summary"/>
+        <result property="blog_status" column="blog_status"/>
+        <result property="blog_visits" column="blog_visits"/>
+        <result property="create_time" column="create_time"/>
+        <result property="update_time" column="update_time"/>
+        <result property="is_top" column="is_top"/>
+        <result property="blog_like" column="blog_like"/>
+        <result property="comment_cnt" column="comment_cnt"/>
+    </resultMap>
+    <select id="getBlogInfoByTag" parameterType="int" resultMap="tag_blogs">
+        select t.tag_id, article_blog_tag.tag_name,b.blog_id,b.blog_title,b.blog_cover_image,
+               b.blog_summary,b.blog_status,b.blog_visits,
+               b.create_time,b.update_time,b.is_top,b.blog_like,
+               (select count(*) from article_comment  where article_comment.blog_id=b.blog_id) as comment_cnt
+        from ((article as b left join article_blog_tag_relation as t on b.blog_id = t.blog_id)
+                 left join article_blog_tag on article_blog_tag.tag_id=t.tag_id)
+        where t.tag_id = #{tag_id}
+        group by b.blog_id
+        order by b.create_time desc
+    </select>
+
+    <!--获取某个标签的文章数量-->
+    <select id="getTagCntBlog" resultType="int">
+        select count(*) from article_blog_tag_relation as relatag
+        where relatag.tag_id = #{tag_id}
+    </select>
+
+    <select id="getRelationId" resultType="int">
+        select  r.relation_id from article_blog_tag_relation as r
+        where r.blog_id=#{blog_id} and r.tag_id=#{tag_id}
+    </select>
+
+    <!--根据标签名查询标签-->
+    <select id="getTagByName" resultType="com.datealive.service.vo.Tag">
+        select t.tag_id,t.tag_name from article_blog_tag as t where tag_name = #{tag_name}
+    </select>
+    <!--添加标签-->
+    <insert id="saveTag" keyProperty="tag_id" useGeneratedKeys="true" parameterType="com.datealive.service.vo.Tag">
+        insert into article_blog_tag(tag_name) values (#{tag_name})
+    </insert>
+
+    <!--删除标签-->
+    <delete id="deleteTag" parameterType="int">
+        delete from article_blog_tag where tag_id = #{tag_id}
+    </delete>
+
+    <!--修改标签-->
+    <update id="updateTag" parameterType="com.datealive.service.vo.Tag">
+        update article_blog_tag
+        set tag_name = #{tag_name}
+        where tag_id=#{tag_id}
+    </update>
+
+    <!--添加标签文章联系表-->
+    <insert id="saveTagRelation" parameterType="int">
+        insert into article_blog_tag_relation(blog_id, tag_id)
+        values (#{blog_id},#{tag_id})
+    </insert>
+
+    <!--修改标签文章联系表-->
+    <update id="updateTagRelation" parameterType="int">
+        update article_blog_tag_relation
+        set blog_id = #{blog_id},
+            tag_id =#{tag_id}
+        where relation_id=#{relation_id}
+    </update>
+
+    <!--根据分类id删除分类联系表的数据-->
+    <delete id="deleteTagRelationBytagId" parameterType="int">
+        delete from article_blog_tag_relation
+        where tag_id=#{tag_id}
+    </delete>
+
+    <delete id="deleteTagRelationByblogId" parameterType="int">
+        delete from article_blog_tag_relation
+        where blog_id = #{blog_id}
+    </delete>
+
+</mapper>

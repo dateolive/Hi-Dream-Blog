@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datealive.mapper.CateGoryMapper">
+
+    <resultMap id="CateGoryIdAndName" type="com.datealive.service.vo.CateGory">
+        <id property="category_id" column="category_id"/>
+        <result property="category_name" column="category_name"/>
+    </resultMap>
+    <!--查询所有分类的id和name-->
+    <select id="getGateGoryIdAndName" resultMap="CateGoryIdAndName">
+        select c.category_id,c.category_name from article_category as c
+    </select>
+
+    <!--查询该分类下所有文章-->
+    <resultMap id="cateGory_blogs" type="com.datealive.pojo.CateGory">
+        <id property="category_id" column="category_id"/>
+        <result property="category_name" column="category_name"/>
+        <collection property="blogs" resultMap="blogInfo"/>
+    </resultMap>
+    <resultMap id="blogInfo" type="com.datealive.service.vo.BlogArticleCateAndTag">
+        <id property="blog_id" column="blog_id"/>
+        <result property="blog_title" column="blog_title"/>
+        <result property="blog_cover_image" column="blog_cover_image"/>
+        <result property="blog_summary" column="blog_summary"/>
+        <result property="blog_status" column="blog_status"/>
+        <result property="blog_visits" column="blog_visits"/>
+        <result property="create_time" column="create_time"/>
+        <result property="update_time" column="update_time"/>
+        <result property="is_top" column="is_top"/>
+        <result property="blog_like" column="blog_like"/>
+        <result property="comment_cnt" column="comment_cnt"/>
+    </resultMap>
+    <select id="getBlogInfoByCategory" parameterType="int" resultMap="cateGory_blogs">
+        select c.category_id, article_category.category_name,b.blog_id,b.blog_title,b.blog_cover_image,
+               b.blog_summary,b.blog_status,b.blog_visits,
+               b.create_time,b.update_time,b.is_top,b.blog_like,
+               (select count(*) from article_comment  where article_comment.blog_id=b.blog_id) as comment_cnt
+        from ((article as b left join tb_blog_category_relation as c on b.blog_id = c.blog_id)
+                 left join article_category on article_category.category_id=c.category_id)
+        where c.category_id = #{category_id}
+        group by b.blog_id
+        order by b.create_time desc
+    </select>
+
+    <!--获取某个分类的文章数量-->
+    <select id="getCateGoryBlogCnt" resultType="int">
+        select count(*) from tb_blog_category_relation as relacate
+        where category_id = #{category_id}
+    </select>
+
+    <!--获取分类的数量-->
+    <select id="getCateGoryCnt" resultType="int">
+        select count(*) from article_category
+    </select>
+
+    <select id="getRelationId" resultType="int">
+        select  r.relation_id from tb_blog_category_relation as r
+        where r.blog_id=#{blog_id} and r.category_id=#{category_id}
+    </select>
+
+    <!--根据标签名查询标签-->
+    <select id="getCateGoryByName" resultType="com.datealive.service.vo.CateGory">
+        select c.category_id,c.category_name from article_category as c where category_name = #{category_name}
+    </select>
+    <!--添加分类-->
+    <insert id="saveCategory" keyProperty="category_id" useGeneratedKeys="true" parameterType="com.datealive.service.vo.CateGory">
+        insert into article_category(category_name) values (#{category_name})
+    </insert>
+
+    <!--删除分类-->
+    <delete id="deleteCategory" parameterType="int">
+        delete from article_category where category_id = #{category_id}
+    </delete>
+
+    <!--修改分类-->
+    <update id="updateCategory" parameterType="com.datealive.service.vo.CateGory">
+        update article_category
+        set category_name = #{category_name}
+        where category_id=#{category_id}
+    </update>
+    <!--添加分类文章联系表-->
+    <insert id="saveCategoryRelation" parameterType="int">
+        insert into tb_blog_category_relation(blog_id, category_id)
+        values (#{blog_id},#{category_id})
+    </insert>
+    <!--修改分类文章联系表-->
+    <update id="updateCategoryRelation" parameterType="int">
+        update tb_blog_category_relation
+        set blog_id = #{blog_id},
+            category_id =#{category_id}
+        where relation_id=#{relation_id}
+    </update>
+    <!--根据分类id删除分类联系表的数据-->
+    <delete id="deleteCategoryRelationBycateId" parameterType="int">
+        delete from tb_blog_category_relation
+        where category_id=#{category_id}
+    </delete>
+
+    <delete id="deleteCateGoryRelationByblogId" parameterType="int">
+        delete from tb_blog_category_relation
+        where blog_id = #{blog_id}
+    </delete>
+
+</mapper>

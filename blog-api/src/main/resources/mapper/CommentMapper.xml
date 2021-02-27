@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datealive.mapper.CommentMapper">
+
+    <resultMap id="comment" type="com.datealive.pojo.Comment">
+        <id property="comment_id" column="comment_id"/>
+        <result property="blog_id" column="blog_id"/>
+        <result property="nick_name" column="nick_name"/>
+        <result property="content" column="content"/>
+        <result property="avatar" column="avatar"/>
+        <result property="email" column="email"/>
+        <result property="reply_nick_name" column="reply_nick_name"/>
+        <result property="pid" column="pid"/>
+        <result property="create_time" column="create_time"/>
+        <result property="page" column="page"/>
+        <result property="is_check" column="is_check"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        comment_id, content,blog_id,nick_name,avatar,email,reply_nick_name, pid, create_time, site_url,page,is_check
+    </sql>
+
+    <select id="getParentComment" resultMap="comment" parameterType="com.datealive.service.dto.CommentQuery">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        article_comment
+        where
+        pid = 0
+        <if test="blog_id != null">
+            and blog_id = #{blog_id}
+        </if>
+        and page = #{page}
+        and is_check=1
+        order by create_time desc
+    </select>
+
+    <select id="getChildComment" resultMap="comment">
+        select
+        <include refid="Base_Column_List"/>
+        from article_comment
+        where pid = #{comment_id} and is_check=1
+    </select>
+
+    <select id="getParentCommentCnt" parameterType="com.datealive.service.dto.CommentQuery" resultType="int">
+        select count(*) from article_comment
+        where
+              pid=0
+        <if test="blog_id != null">
+            and blog_id = #{blog_id}
+        </if>
+        <if test="page != null">
+            and page = #{page}
+        </if>
+          and is_check=1
+    </select>
+
+    <select id="getAllComment" resultMap="comment">
+        select
+        <include refid="Base_Column_List"/>
+        from article_comment
+        order by is_check
+    </select>
+
+    <select id="getAllCommentCnt" resultType="int">
+        select count(*) from article_comment
+    </select>
+    
+    <select id="getCommentByNickName" resultMap="comment">
+        select
+        <include refid="Base_Column_List"/>
+        from article_comment
+        where nick_name like concat(concat("%",#{nick_name}),"%")
+    </select>
+
+    <select id="getCommentByCommentId" resultMap="comment">
+        select
+        <include refid="Base_Column_List"/>
+        from article_comment
+        where pid = #{comment_id}
+    </select>
+    
+    <insert id="saveComment" parameterType="com.datealive.service.vo.CommentSub">
+        insert into
+            article_comment(content, blog_id, nick_name, avatar, email, reply_nick_name,pid,create_time, site_url,page,is_check)
+            VALUES
+                   (#{content}, #{blog_id}, #{nick_name}, #{avatar}, #{email}, #{reply_nick_name}, #{pid},#{create_time}, #{site_url},#{page},#{is_check})
+    </insert>
+
+    <delete id="deleteComment">
+        delete from article_comment where comment_id = #{comment_id}
+    </delete>
+
+    <update id="checkComment">
+        update article_comment
+        set is_check = #{is_check}
+        where comment_id=#{comment_id}
+    </update>
+
+    <select id="getEmailByCommentId" resultType="String">
+        select email from article_comment where comment_id = #{comment_id}
+    </select>
+
+    <select id="getCommentByPid" resultType="com.datealive.pojo.Comment">
+        select * from article_comment where comment_id = #{comment_id}
+    </select>
+
+</mapper>
