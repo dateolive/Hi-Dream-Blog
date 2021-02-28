@@ -41,12 +41,12 @@ public class DruidConfig {
         // 的父类 com.alibaba.druid.support.http.ResourceServlet 中找到
         Map<String, String> initParams = new HashMap<>();
         initParams.put("loginUsername", "admin"); //后台管理界面的登录账号
-        initParams.put("loginPassword", "357159."); //后台管理界面的登录密码
+        initParams.put("loginPassword", "admin"); //后台管理界面的登录密码
        // initParams.put("initConnectionSqls", "set names utf8mb4;");
         //后台允许谁可以访问
-        //initParams.put("allow", "localhost")：表示只有本机可以访问
+        initParams.put("allow", "localhost");//表示只有本机可以访问
         //initParams.put("allow", "")：为空或者为null时，表示允许所有访问
-        initParams.put("allow", "");
+        //initParams.put("allow", "");
         //deny：Druid 后台拒绝谁访问
         //initParams.put("kuangshen", "192.168.1.20");表示禁止此ip访问
 
