@@ -56,8 +56,8 @@ public class UpLoadImageImpl implements UpLoadService {
         try {
             file.transferTo(newFile);
             //协议 :// ip地址 ：端口号 / 文件目录(/images/2020/03/15/xxx.jpg)
-            String url = request.getScheme() + "://" + request.getServerName() + "/images/" + directory + newFileName;
-           // String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/images/" + directory + newFileName;
+            //String url = request.getScheme() + "://" + request.getServerName() + "/images/" + directory + newFileName;
+           String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/images/" + directory + newFileName;
             return Result.success("图片上传成功",url);
         } catch (IOException e) {
             return Result.error("图片上传失败");

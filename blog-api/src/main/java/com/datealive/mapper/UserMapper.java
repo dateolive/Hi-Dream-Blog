@@ -22,7 +22,25 @@ public interface UserMapper {
      */
     User getUserByName(@Param("username") String username);
 
+    /**
+     * 根据id查找用户
+     * @param userId
+     * @return
+     */
     User getUserById(@Param("userId")Integer userId);
 
+    /**
+     * 修改密码
+     * @param userName
+     * @param password
+     * @return
+     */
     int changePassword(@Param("userName") String userName,@Param("password") String password);
+
+    /**
+     * 注册用户
+     * @param user
+     * @return
+     */
+    int registerUser(User user);
 }

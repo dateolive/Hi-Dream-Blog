@@ -17,4 +17,10 @@
     <update id="changePassword">
         update blog_user set password = #{password} where username = #{userName}
     </update>
+    <!--注册用户-->
+    <insert id="registerUser" parameterType="com.datealive.pojo.User">
+        INSERT INTO
+            `blog_user`(username, password, nick_name, avatar, introduce, roles, email)
+        VALUES (#{username},#{password},#{nick_name},#{avatar},#{introduce},#{roles},#{email})
+    </insert>
 </mapper>

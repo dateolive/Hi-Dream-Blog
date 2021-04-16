@@ -16,6 +16,7 @@
                             <el-input v-model="blogDetail.blog_title" style="width:400px"></el-input>
                         </el-form-item>
                         <el-form-item label="文章配图">
+                            <el-input v-model="blogDetail.blog_cover_image" style="width:400px;padding-bottom:20px;"></el-input>
                             <el-upload
                                 class="upload-demo"
                                 ref="upload"
@@ -29,7 +30,7 @@
                                 :limit="1"
                             >
                                 <el-button size="small" type="primary">点击上传</el-button>
-                                <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过500kb</div>
+                                <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过1MB</div>
                             </el-upload>
                         </el-form-item>
                         <el-form-item label="内容摘要">
@@ -171,7 +172,33 @@ export default {
     },
     methods: {
         // 将图片上传到服务器，返回地址替换到md中
-        $imgAdd(pos, $file) {},
+        $imgAdd(pos, $file) {
+               // 第一步.将图片上传到服务器.
+           const _this=this;
+           var formdata = new FormData();
+           formdata.append('file', $file);
+            _this.$axios
+                .post(
+                    '/admin/uploadImgtoGitee',
+                    formdata,
+                    {
+                        headers: {
+                            Authorization: localStorage.getItem('token')
+                        }
+                    },
+                
+                )
+                .then(res => {
+                
+                    this.$refs.md.$img2Url(pos, res.data.data);
+                    this.$message.success(res.data.msg);
+                 
+                })
+                .catch(err => {
+                 
+                    this.$message.error('没有权限');
+                });
+        },
         change(value, render) {
             // render 为 markdown 解析后的结果
             //  this.blogDetail.blog_content=render;
@@ -341,9 +368,9 @@ export default {
         },
         UploadImage(param) {
             const formData = new FormData();
-            formData.append('blog_img', param.file);
+            formData.append('file', param.file);
              this.$axios
-                .post('/admin/uploadImg', formData, {
+                .post('/admin/uploadImgtoGitee', formData, {
                     headers: {
                         Authorization: localStorage.getItem('token')
                     }

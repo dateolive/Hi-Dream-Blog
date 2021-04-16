@@ -9,6 +9,7 @@ import com.datealive.pojo.User;
 import com.datealive.service.UserService;
 import com.datealive.service.dto.LoginDto;
 import com.datealive.service.dto.ModifyPwd;
+import com.datealive.service.dto.RegisterDto;
 import com.datealive.utils.JwtUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,7 @@ public class LoginController {
         User user=userService.getUserByName(loginDto.getUsername());
         Assert.notNull(user, "用户不存在");
         String hashMd5AfterPassword=new Md5Hash(loginDto.getPassword(),loginDto.getUsername(),1024).toHex();
-     //   System.out.println("加密后的=======>"+hashMd5AfterPassword);
+       System.out.println("加密后的=======>"+hashMd5AfterPassword);
         if(!user.getPassword().equals(hashMd5AfterPassword)){
             log.error("账号"+loginDto.getUsername()+"账号"+loginDto.getPassword()+"登录失败");
             return Result.error("密码或用户名不正确");
@@ -112,6 +113,22 @@ public class LoginController {
         }
         log.info("用户修改密码成功");
         return userService.changePassword(userName,newPassword);
+    }
+
+    /**
+     * 目前是个人博客  注册只在第一次启动时开启注册功能，后期多用户管理时  可以开启注册功能
+     * @param registerDto
+     * @return
+     */
+    @PostMapping("/register")
+    public Result RegisterUser(@Validated @RequestBody RegisterDto registerDto){
+        //注册用户的时候，需要验证邮箱是否已经存在  赋予低级权限
+        boolean registerUser = userService.RegisterUser(registerDto);
+        if(registerUser){
+            return Result.success("注册成功");
+        }else {
+            return Result.error("注册失败");
+        }
     }
 
 }

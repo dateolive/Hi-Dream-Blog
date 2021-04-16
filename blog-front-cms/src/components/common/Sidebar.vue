@@ -101,6 +101,11 @@ export default {
                     index: 'comments',
                     title: '评论管理'
                 },
+                {
+                    icon: 'el-icon-picture',
+                    index: 'ImageBed',
+                    title: '码云图床'
+                },
                  {
                     icon: 'el-icon-tickets',
                     index: '7',

@@ -108,6 +108,12 @@ export default new Router({
                     meta: { title: '站点设置', requireAuth: true  }
                 },
                 {
+                    path:'/ImageBed',
+                    name:'ImageBed',
+                    component: () => import(/* webpackChunkName: "articles" */ '../components/page/ImageBed.vue'),
+                    meta: { title: '码云图床', requireAuth: true  }
+                },
+                {
                     path: '/404',
                     name:'404',
                     component: () => import(/* webpackChunkName: "404" */ '../components/page/404.vue'),

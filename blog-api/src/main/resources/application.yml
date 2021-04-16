@@ -2,7 +2,8 @@ server:
   port: 8089
   website:
     url: https://blog.datealive.top/ #评论邮箱回复前缀链接  这里是你的前端页面url
-file-save-path: D:/blogimg/ #/www/wwwroot/api.datealive.top/image/ #文件上传位置
+  max-http-header-size: 16KB
+file-save-path: D:/blogimg #/www/wwwroot/api.datealive.top/image/ #文件上传位置
 
 spring:
   datasource:
@@ -24,6 +25,13 @@ spring:
     testOnBorrow: false
     testOnReturn: false
     poolPreparedStatements: true
+    stat-view-servlet:
+      enabled: false
+    web-stat-filter:
+      enabled: false
+    filter:
+      config:
+        enabled: false
     #配置监控统计拦截的filters，stat:监控统计、log4j：日志记录、wall：防御sql注入
     #如果允许时报错  java.lang.ClassNotFoundException: org.apache.log4j.Priority
     #则导入 log4j 依赖即可，Maven 地址：https://mvnrepository.com/artifact/log4j/log4j
@@ -59,10 +67,17 @@ shiro-redis:
 datealive:
   jwt:
     # 加密秘钥
-    secret: zrf5202e34348f86b67cde581c0f9eb5
+    secret: zrf5201314348f86b67cde581c0f9e11
     # token有效时长，7天，单位秒
     expire: 604800
     header: token
+  gitee:
+    #token
+    ACCESS_TOKEN: 8ade7e71eaa9bd61f9eccedfe0fbb821  #自己去申请
+    OWNER: zhangrenfeng #个人空间名
+    REPO_NAME: images #仓库名
+
+
 pagehelper:
   helperDialect: mysql
   reasonable: true

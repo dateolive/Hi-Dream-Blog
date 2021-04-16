@@ -61,7 +61,7 @@
         select
         <include refid="Base_Column_List"/>
         from article_comment
-        order by is_check
+        order by is_check, create_time desc
     </select>
 
     <select id="getAllCommentCnt" resultType="int">

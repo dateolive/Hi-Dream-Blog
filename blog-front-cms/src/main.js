@@ -13,7 +13,9 @@ import './permission.js' // 路由拦截
 import axios from '@/plugins/axios'
 
 Vue.prototype.$axios = axios //
+import VueClipboard from 'vue-clipboard2'
 
+Vue.use(VueClipboard)
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI, {

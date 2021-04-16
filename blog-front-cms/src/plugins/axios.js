@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Element from "element-ui";
-axios.defaults.baseURL = 'https://api.datealive.top'
+axios.defaults.baseURL = 'http://localhost:8089'
 import {Message} from "element-ui"
 let CancelToken = axios.CancelToken
 axios.interceptors.request.use(config => {
