@@ -176,10 +176,16 @@ export default {
                 oldPassword: oldpassword,
                 newPassword: newpassword
             };
+            console.log(params)
             // console.log(username);
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    _this.$axios.post('/user/changePassword', params).then(res => {
+                    _this.$axios.post('/user/changePassword',params, {
+                    headers: {
+                        Authorization: localStorage.getItem('token')
+                    }
+                    }
+                    ).then(res => {
                         this.$message({
                             message: res.data.msg,
                             type: 'success'
